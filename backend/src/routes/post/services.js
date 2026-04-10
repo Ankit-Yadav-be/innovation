@@ -38,6 +38,6 @@ export const getSinglePost = async (id) => {
   return post;
 };
 
-export const searchPostsService = async (query) => {
-  return postQuery.searchPosts(query);
+export const searchPostsService = async () => {
+  return postQuery.searchPosts();
 };

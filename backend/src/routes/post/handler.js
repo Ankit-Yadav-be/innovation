@@ -11,15 +11,8 @@ export const fetchPosts = async (req, res, next) => {
 
 export const getPosts = async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 9;
-
-    const data = await postService.getPosts(page, limit);
-
-    res.json({
-      success: true,
-      ...data,
-    });
+    const data = await postService.getPosts();
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
