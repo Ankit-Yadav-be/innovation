@@ -8,14 +8,15 @@ app.use(cors());
 
 app.use(express.json());
 
-// error handling middleware
-app.use(errorMiddleware);
-
 app.get('/',(req,res)=>{
    res.send("API Running...")
 })
 
 // routes
 app.use('/api/posts', postRoutes);
+
+// error handling middleware
+app.use(errorMiddleware);
+
 
 export default app;

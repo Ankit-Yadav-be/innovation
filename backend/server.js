@@ -4,7 +4,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+//  DB connect (once)
+let isConnected = false;
 
-const PORT = process.env.PORT || 8000;
+const connectOnce = async () => {
+  if (!isConnected) {
+    await connectDB();
+    isConnected = true;
+  }
+};
 
-connectDB();
+//  Vercel handler
+export default async function handler(req, res) {
+  await connectOnce();
+  return app(req, res);
+}
