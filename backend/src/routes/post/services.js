@@ -28,8 +28,8 @@ export const fetchAndSavePosts = async () => {
   return formattedPosts;
 };
 
-export const getPosts = async () => {
-  return postQuery.getAllPosts();
+export const getPosts = async (page, limit) => {
+  return postQuery.getAllPosts(page, limit);
 };
 
 export const getSinglePost = async (id) => {

@@ -7,13 +7,22 @@ import {
   Skeleton,
   SkeletonText,
   VStack,
+  Button,
 } from '@chakra-ui/react';
 import { usePosts } from '../hooks/usePosts';
 import SearchBar from '../components/SearchBar';
 import PostCard from '../components/PostCard';
 
 const Home = () => {
-  const { posts, loading, search } = usePosts();
+  const {
+    posts,
+    loading,
+    search,
+    page,
+    totalPages,
+    nextPage,
+    prevPage,
+  } = usePosts();
 
   return (
     <Box bg="gray.50" minH="100vh">
@@ -24,19 +33,18 @@ const Home = () => {
         color="white"
         py={16}
         textAlign="center"
-        position="relative"
       >
         <VStack spacing={4}>
           <Text fontSize="5xl" fontWeight="extrabold">
             Discover Amazing Stories
           </Text>
           <Text fontSize="lg" opacity={0.9}>
-            Explore content, learn new things, and stay inspired with our curated posts.
+            Explore content, learn new things, and stay inspired every day
           </Text>
         </VStack>
       </Box>
 
-      {/*  FLOATING SEARCH */}
+      {/* 🔍 FLOATING SEARCH */}
       <Container maxW="container.md" mt={-10} mb={10}>
         <Box
           bg="whiteAlpha.900"
@@ -45,24 +53,24 @@ const Home = () => {
           borderRadius="2xl"
           shadow="xl"
         >
-          <SearchBar onSearch={search} />
+          <SearchBar onSearch={(val) => search(val, 1)} />
         </Box>
       </Container>
 
       {/*  CONTENT SECTION */}
       <Container maxW="container.xl" pb={10}>
         
-        {/*  Section Title */}
+        {/*  HEADER */}
         <Flex justify="space-between" align="center" mb={6}>
           <Text fontSize="2xl" fontWeight="bold">
             Latest Posts
           </Text>
           <Text fontSize="sm" color="gray.500">
-            {posts.length} articles
+            Page {page} of {totalPages}
           </Text>
         </Flex>
 
-        {/*  Loading Skeleton */}
+        {/*  LOADING */}
         {loading ? (
           <SimpleGrid columns={[1, 2, 3]} spacing={8}>
             {[...Array(6)].map((_, i) => (
@@ -83,7 +91,7 @@ const Home = () => {
           </SimpleGrid>
         ) : posts.length === 0 ? (
 
-          /*  Empty State */
+          /*  EMPTY STATE */
           <Flex
             direction="column"
             justify="center"
@@ -102,13 +110,41 @@ const Home = () => {
 
         ) : (
 
-          /*  POSTS GRID */
-          <SimpleGrid columns={[1, 2, 3]} spacing={8}>
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
-          </SimpleGrid>
+          <>
+            {/*  POSTS GRID */}
+            <SimpleGrid columns={[1, 2, 3]} spacing={8}>
+              {posts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </SimpleGrid>
 
+            {/*  PAGINATION */}
+            <Flex justify="center" mt={10} gap={4} align="center">
+              
+              <Button
+                onClick={prevPage}
+                isDisabled={page === 1}
+                variant="outline"
+                borderRadius="lg"
+              >
+                ← Prev
+              </Button>
+
+              <Text fontWeight="medium">
+                {page} / {totalPages}
+              </Text>
+
+              <Button
+                onClick={nextPage}
+                isDisabled={page === totalPages}
+                colorScheme="teal"
+                borderRadius="lg"
+              >
+                Next →
+              </Button>
+
+            </Flex>
+          </>
         )}
       </Container>
 

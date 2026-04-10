@@ -11,10 +11,23 @@ export const insertPosts = async (posts) => {
 };
 
 //  Get All Posts (latest first)
-export const getAllPosts = async () => {
-  return await Post.find()
-    .sort({ createdAt: -1 }) // latest first
-    .lean(); // performance boost
+export const getAllPosts = async (page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
+  const posts = await Post.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  const total = await Post.countDocuments();
+
+  return {
+    posts,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 //  Get Single Post

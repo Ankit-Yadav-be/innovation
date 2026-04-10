@@ -12,10 +12,10 @@ import { useState, useEffect } from 'react';
 const SearchBar = ({ onSearch }) => {
   const [value, setValue] = useState('');
 
-  //  Debounce Logic
+  //  Debounce + Page Reset
   useEffect(() => {
     const delay = setTimeout(() => {
-      onSearch(value);
+      onSearch(value, 1); 
     }, 400);
 
     return () => clearTimeout(delay);
@@ -23,14 +23,14 @@ const SearchBar = ({ onSearch }) => {
 
   const handleClear = () => {
     setValue('');
-    onSearch('');
+    onSearch('', 1); 
   };
 
   return (
     <Box maxW="500px" mx="auto">
       <InputGroup>
-        
-        {/*  Search Icon */}
+
+        {/* 🔍 Search Icon */}
         <InputLeftElement pointerEvents="none">
           <SearchIcon color="gray.400" />
         </InputLeftElement>
@@ -64,6 +64,7 @@ const SearchBar = ({ onSearch }) => {
             />
           </InputRightElement>
         )}
+
       </InputGroup>
     </Box>
   );
