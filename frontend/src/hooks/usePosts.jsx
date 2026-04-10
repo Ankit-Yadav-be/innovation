@@ -9,20 +9,23 @@ export const usePosts = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [query, setQuery] = useState('');
 
+  //  GET POSTS (WITH PAGINATION)
   const getPosts = async (pageNumber = 1) => {
     setLoading(true);
     try {
       const { data } = await postApi.fetchPosts(pageNumber);
 
-      setPosts(data.posts);
-      setTotalPages(data.totalPages);
-      setPage(data.page);
+      setPosts(data.posts || []);
+      setTotalPages(data.totalPages || 1);
+      setPage(data.page || 1);
+      setQuery(''); // reset search
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
   };
 
+  // 🔹 INIT (fetch + save + load first page)
   const initPosts = async () => {
     setLoading(true);
     try {
@@ -34,33 +37,36 @@ export const usePosts = () => {
     setLoading(false);
   };
 
-  const search = async (q, pageNumber = 1) => {
+  // SEARCH (NO PAGINATION)
+  const search = async (q) => {
     setQuery(q);
 
-    if (!q) return getPosts(pageNumber);
+    if (!q) return getPosts(1); 
 
     setLoading(true);
     try {
-      const { data } = await postApi.searchPosts(q, pageNumber);
+      const { data } = await postApi.searchPosts(q);
 
-      setPosts(data.posts);
-      setTotalPages(data.totalPages);
-      setPage(data.page);
+      setPosts(data.data || []);
+      setPage(1);
+      setTotalPages(1);
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
   };
 
+  //  NEXT PAGE (ONLY IF NOT SEARCHING)
   const nextPage = () => {
-    if (page < totalPages) {
-      query ? search(query, page + 1) : getPosts(page + 1);
+    if (!query && page < totalPages) {
+      getPosts(page + 1);
     }
   };
 
+  //  PREV PAGE (ONLY IF NOT SEARCHING)
   const prevPage = () => {
-    if (page > 1) {
-      query ? search(query, page - 1) : getPosts(page - 1);
+    if (!query && page > 1) {
+      getPosts(page - 1);
     }
   };
 
@@ -76,5 +82,6 @@ export const usePosts = () => {
     totalPages,
     nextPage,
     prevPage,
+    isSearching: !!query,
   };
 };
