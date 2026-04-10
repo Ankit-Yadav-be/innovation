@@ -1,21 +1,28 @@
-import app from './src/app.js';
-import connectDB from './src/config/db.js';
-import dotenv from 'dotenv';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./src/config/db.js";
+
+import postRoutes from "./src/routes/post/index.js";
+import errorMiddleware from "./src/middleware/errorMiddleware.js";
 
 dotenv.config();
 
-//  DB connect (once)
-let isConnected = false;
+const app = express();
 
-const connectOnce = async () => {
-  if (!isConnected) {
-    await connectDB();
-    isConnected = true;
-  }
-};
+//  Middlewares
+app.use(cors());
+app.use(express.json());
 
-//  Vercel handler
-export default async function handler(req, res) {
-  await connectOnce();
-  return app(req, res);
-}
+connectDB();
+
+//  Routes
+app.get("/", (req, res) => {
+  res.send("API Running....");
+});
+
+app.use("/api/posts", postRoutes);
+
+app.use(errorMiddleware);
+
+export default app;
