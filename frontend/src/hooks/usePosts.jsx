@@ -46,9 +46,10 @@ const search = async (q) => {
   setLoading(true);
   try {
     const { data } = await postApi.searchPosts(q);
-    setPosts(data?.data || []);
+
+    setPosts(data.data);
+    setTotalPages(1);   
     setPage(1);
-    setTotalPages(1);
   } catch (err) {
     console.error(err);
   }

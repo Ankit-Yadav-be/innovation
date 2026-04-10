@@ -1,18 +1,16 @@
 import axios from 'axios';
 import * as postQuery from './query.js';
 
-
+// Fetch from external API & store
 export const fetchAndSavePosts = async () => {
   const count = await postQuery.countPosts();
 
   if (count > 0) {
-    console.log('Posts already exist');
-    return;
+    return { message: 'Posts already exist' };
   }
 
   const { data } = await axios.get('https://dev.to/api/articles');
 
-  //  map data
   const formattedPosts = data.map((item) => ({
     title: item.title,
     description: item.description,
@@ -28,16 +26,20 @@ export const fetchAndSavePosts = async () => {
   return formattedPosts;
 };
 
+// Pagination posts
 export const getPosts = async (page, limit) => {
   return postQuery.getAllPosts(page, limit);
 };
 
+// Single post
 export const getSinglePost = async (id) => {
   const post = await postQuery.getPostById(id);
   if (!post) throw new Error('Post not found');
   return post;
 };
 
-export const searchPostsService = async () => {
-  return postQuery.searchPosts();
+// Search (NO pagination)
+export const searchPostsService = async (query) => {
+  if (!query) return [];
+  return postQuery.searchPosts(query);
 };

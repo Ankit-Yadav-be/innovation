@@ -12,5 +12,5 @@ export const fetchAndSavePosts = () => API.get('/api/posts/fetch');
 export const fetchSinglePost = (id) =>
   API.get(`/api/posts/${id}`);
 
-export const searchPosts = (query, page = 1, limit = 9) =>
-  API.get(`/api/posts/search?q=${query}&page=${page}&limit=${limit}`);
+export const searchPosts = (query) =>
+  API.get(`/api/posts/search?q=${query}`);

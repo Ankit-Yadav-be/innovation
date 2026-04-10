@@ -22,12 +22,13 @@ const Home = () => {
     totalPages,
     nextPage,
     prevPage,
+    isSearching, // ✅ important
   } = usePosts();
 
   return (
     <Box bg="gray.50" minH="100vh">
 
-      {/*  HERO SECTION */}
+      {/* 🔥 HERO SECTION */}
       <Box
         bgGradient="linear(to-r, teal.500, blue.500)"
         color="white"
@@ -53,24 +54,27 @@ const Home = () => {
           borderRadius="2xl"
           shadow="xl"
         >
-          <SearchBar onSearch={(val) => search(val, 1)} />
+          <SearchBar onSearch={search} />
         </Box>
       </Container>
 
-      {/*  CONTENT SECTION */}
+      {/* 📦 CONTENT */}
       <Container maxW="container.xl" pb={10}>
         
-        {/*  HEADER */}
+        {/* 🔥 HEADER */}
         <Flex justify="space-between" align="center" mb={6}>
           <Text fontSize="2xl" fontWeight="bold">
-            Latest Posts
+            {isSearching ? "Search Results" : "Latest Posts"}
           </Text>
+
           <Text fontSize="sm" color="gray.500">
-            Page {page} of {totalPages}
+            {isSearching
+              ? `${posts.length} results found`
+              : `Page ${page} of ${totalPages}`}
           </Text>
         </Flex>
 
-        {/*  LOADING */}
+        {/* ⏳ LOADING */}
         {loading ? (
           <SimpleGrid columns={[1, 2, 3]} spacing={8}>
             {[...Array(6)].map((_, i) => (
@@ -91,7 +95,7 @@ const Home = () => {
           </SimpleGrid>
         ) : posts.length === 0 ? (
 
-          /*  EMPTY STATE */
+          /* 😕 EMPTY STATE */
           <Flex
             direction="column"
             justify="center"
@@ -101,7 +105,7 @@ const Home = () => {
           >
             <Text fontSize="4xl">😕</Text>
             <Text fontSize="lg" color="gray.500">
-              No posts found
+              {isSearching ? "No results found" : "No posts available"}
             </Text>
             <Text fontSize="sm" color="gray.400">
               Try searching something else
@@ -111,39 +115,41 @@ const Home = () => {
         ) : (
 
           <>
-            {/*  POSTS GRID */}
+            {/* 🧩 POSTS GRID */}
             <SimpleGrid columns={[1, 2, 3]} spacing={8}>
               {posts.map((post) => (
                 <PostCard key={post._id} post={post} />
               ))}
             </SimpleGrid>
 
-            {/*  PAGINATION */}
-            <Flex justify="center" mt={10} gap={4} align="center">
-              
-              <Button
-                onClick={prevPage}
-                isDisabled={page === 1}
-                variant="outline"
-                borderRadius="lg"
-              >
-                ← Prev
-              </Button>
+            {/* 🚫 PAGINATION (HIDE IN SEARCH) */}
+            {!isSearching && (
+              <Flex justify="center" mt={10} gap={4} align="center">
+                
+                <Button
+                  onClick={prevPage}
+                  isDisabled={page === 1}
+                  variant="outline"
+                  borderRadius="lg"
+                >
+                  ← Prev
+                </Button>
 
-              <Text fontWeight="medium">
-                {page} / {totalPages}
-              </Text>
+                <Text fontWeight="medium">
+                  {page} / {totalPages}
+                </Text>
 
-              <Button
-                onClick={nextPage}
-                isDisabled={page === totalPages}
-                colorScheme="teal"
-                borderRadius="lg"
-              >
-                Next →
-              </Button>
+                <Button
+                  onClick={nextPage}
+                  isDisabled={page === totalPages}
+                  colorScheme="teal"
+                  borderRadius="lg"
+                >
+                  Next →
+                </Button>
 
-            </Flex>
+              </Flex>
+            )}
           </>
         )}
       </Container>
